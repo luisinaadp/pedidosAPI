@@ -20,11 +20,12 @@ public class PedidoService {
         return repository.findByPropietario(usuarioAutenticado);
     }
 
-    // INTENCIONALMENTE VULNERABLE PARA DEMOSTRACION: IDOR / Broken Access Control.
-    // Se consulta el pedido por ID, pero NO se comprueba que pertenezca al usuario autenticado.
-    // No utilizar este metodo en una aplicacion real.
-    public Pedido obtenerPedido(Long id) {
-        return repository.findById(id).orElseThrow(() ->
+    public Pedido obtenerPedido(Long id, String usuarioAutenticado) {
+        Pedido pedido = repository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido no encontrado"));
+        if (!usuarioAutenticado.equals(pedido.getPropietario())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acceso denegado");
+        }
+        return pedido;
     }
 }
