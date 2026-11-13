@@ -25,8 +25,7 @@ public class PedidoController {
     }
 
     @GetMapping("/{id}")
-    public Pedido obtenerPedido(@PathVariable Long id) {
-        // BUG: No pasamos el usuario autenticado para verificar la propiedad del pedido.
-        return service.obtenerPedido(id);
+    public Pedido obtenerPedido(@PathVariable Long id, Authentication authentication) {
+        return service.obtenerPedido(id, authentication.getName());
     }
 }
